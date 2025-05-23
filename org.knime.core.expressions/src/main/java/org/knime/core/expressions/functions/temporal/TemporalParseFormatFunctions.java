@@ -488,7 +488,7 @@ public final class TemporalParseFormatFunctions {
             try {
                 return Optional.of(formatter.withLocale(locale).parse(dateTimeString, LocalDateTime::from));
             } catch (DateTimeParseException e) {
-                if (checkIfFormatIsUnderSpecified(formatter, LocalTime::from)) {
+                if (checkIfFormatIsUnderSpecified(formatter, LocalDateTime::from)) {
                     var format = formatString.get();
 
                     // if the format is underspecified, we give a special warning
@@ -582,7 +582,7 @@ public final class TemporalParseFormatFunctions {
             try {
                 return Optional.of(formatter.withLocale(locale).parse(zonedDateTimeString, ZonedDateTime::from));
             } catch (DateTimeParseException e) {
-                if (checkIfFormatIsUnderSpecified(formatter, LocalTime::from)) {
+                if (checkIfFormatIsUnderSpecified(formatter, ZonedDateTime::from)) {
                     var format = formatString.get();
 
                     // if the format is underspecified, we give a special warning
