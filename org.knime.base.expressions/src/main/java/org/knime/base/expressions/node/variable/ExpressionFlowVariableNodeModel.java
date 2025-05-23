@@ -364,11 +364,8 @@ final class ExpressionFlowVariableNodeModel extends NodeModel {
 
     /** Helper to get the ValueType of a flow variable from the given map (use for type inference) */
     static ReturnResult<ValueType> toValueType(final Map<String, FlowVariable> flowVariables, final String name) {
-        return ReturnResult
-            .fromNullable(flowVariables.get(name), "No flow variable with the name '" + name + "' is available.") //
-            .map(FlowVariable::getVariableType) //
-            .flatMap(type -> ReturnResult.fromNullable(ExpressionRunnerUtils.mapVariableToValueType(type),
-                "Flow variables of the type '" + type + "' are not supported in expressions."));
+        return ExpressionRunnerUtils.flowVarToTypeForTypeInference(flowVariables)
+            .apply(name);
     }
 
     private static Optional<Computer> toComputer(final Map<String, FlowVariable> flowVariables,

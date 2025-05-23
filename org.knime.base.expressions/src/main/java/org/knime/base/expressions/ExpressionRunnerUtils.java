@@ -582,11 +582,22 @@ public final class ExpressionRunnerUtils {
      */
     public static Function<String, ReturnResult<ValueType>>
         flowVarToTypeForTypeInference(final Map<String, FlowVariable> flowVars) {
-        return name -> ReturnResult
-            .fromNullable(flowVars.get(name), "No flow variable with the name '" + name + "' is available.") //
-            .map(FlowVariable::getVariableType) //
-            .flatMap(type -> ReturnResult.fromNullable(mapVariableToValueType(type),
-                "Flow variables of the type '" + type + "' are not supported"));
+        return name -> {
+            var flowVar = flowVars.get(name);
+            if (flowVar == null) {
+                return ReturnResult.failure("No flow variable with the name '" + name + "' is available.");
+            }
+
+            if (flowVar.getVariableType() == VariableType.StringType.INSTANCE
+                && flowVar.getValue(VariableType.StringType.INSTANCE) == null) {
+                return ReturnResult.failure(
+                    "The STRING flow variable '" + name + "' has the value null.");
+            }
+
+            var valueType = mapVariableToValueType(flowVar.getVariableType());
+            return ReturnResult.fromNullable(valueType,
+                "Flow variables of the type '" + flowVar.getVariableType() + "' are not supported");
+        };
     }
 
     /**
